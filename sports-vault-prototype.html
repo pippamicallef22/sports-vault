@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080909">
+<title>Sports Vault — Prototype</title>
+<style>
+:root{--bg:#080909;--panel:#111312;--panel2:#171916;--gold:#d5ae63;--gold2:#8d6a34;--text:#f7f3e9;--muted:#9b9b91;--line:#292b27;--green:#8fbf91}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:#050606;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{display:flex;justify-content:center}.app{width:100%;max-width:520px;min-height:100vh;background:radial-gradient(circle at 80% -10%,#42351f55,transparent 28%),var(--bg);padding-bottom:92px}
+header{position:sticky;top:0;z-index:5;background:#080909e8;backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:calc(16px + env(safe-area-inset-top)) 18px 14px}
+.brand{font-family:Georgia,serif;font-weight:800;letter-spacing:.14em;color:var(--gold);font-size:22px}.sub{font-size:11px;color:var(--muted);letter-spacing:.18em;margin-top:3px}
+main{padding:20px 16px}.hero{padding:24px 20px;border:1px solid #4a3b24;border-radius:24px;background:linear-gradient(135deg,#1d1b16,#0c0d0c 58%,#2c2417);box-shadow:0 16px 45px #0008}
+.eyebrow{color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.18em}.hero h1{font:700 34px/1.02 Georgia,serif;margin:8px 0}.hero p{color:#bbb8ae;line-height:1.5;margin:8px 0 18px}
+.search{display:flex;gap:8px}.search input{width:100%;border:1px solid var(--line);background:#0b0c0b;color:white;border-radius:14px;padding:14px}.search button,.goldbtn{border:0;background:var(--gold);color:#17130c;font-weight:900;border-radius:14px;padding:0 16px}
+.sectionTitle{display:flex;align-items:end;justify-content:space-between;margin:25px 2px 12px}.sectionTitle h2{font:700 20px Georgia,serif;margin:0}.sectionTitle span{font-size:12px;color:var(--muted)}
+.sports{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sport{padding:20px;border:1px solid var(--line);background:linear-gradient(145deg,#151715,#0c0d0c);border-radius:20px;cursor:pointer}.sport.active{border-color:var(--gold2);box-shadow:inset 0 0 0 1px #7a5a2e}.icon{font-size:32px}.sport b{display:block;font:700 19px Georgia,serif;margin-top:10px}.sport small{color:var(--muted)}
+.time{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:18px}.yearBig{font:800 34px Georgia,serif;color:var(--gold)}input[type=range]{width:100%;accent-color:var(--gold)}
+.yearrow{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}.cards{display:grid;gap:10px}.card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:16px;cursor:pointer}.card:hover{border-color:#665234}.teamline{display:flex;align-items:center;gap:13px}.badge{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#27231b;color:var(--gold);font-weight:900;border:1px solid #4b3d28}.card b{font-size:15px}.card small{color:var(--muted)}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:#0b0c0b;border:1px solid var(--line);padding:11px;border-radius:12px;text-align:center}.stat strong{display:block;color:var(--gold);font-size:18px}.stat span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.playerHead{display:flex;gap:15px;align-items:center}.avatar{width:70px;height:70px;border-radius:20px;background:linear-gradient(145deg,#55472f,#191a17);display:grid;place-items:center;font:800 26px Georgia;color:var(--gold)}
+.pill{display:inline-block;border:1px solid #56452c;color:var(--gold);border-radius:999px;padding:5px 9px;font-size:10px;margin-top:5px}.back{border:0;background:none;color:var(--gold);padding:0 0 14px;font-weight:800}
+.compareRow{display:grid;grid-template-columns:1fr 34px 1fr;align-items:center;text-align:center}.vs{color:var(--gold);font-weight:900}
+.notice{font-size:11px;color:#a7a398;border-left:2px solid var(--gold2);padding-left:10px;margin:14px 2px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 8px calc(10px + env(safe-area-inset-bottom));background:#0a0b0af2;border-top:1px solid var(--line);backdrop-filter:blur(16px)}
+nav button{background:none;border:0;color:#8d8d84;font-size:10px;padding:5px}nav button.active{color:var(--gold)}nav i{display:block;font-style:normal;font-size:20px;margin-bottom:2px}
+.empty{text-align:center;color:var(--muted);padding:30px 15px}.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">SPORTS VAULT</div><div class="sub">EVERY PLAYER • EVERY SEASON</div></header>
+<main id="view"></main>
+<nav>
+<button data-tab="home" class="active"><i>⌂</i>HOME</button>
+<button data-tab="search"><i>⌕</i>SEARCH</button>
+<button data-tab="compare"><i>⇄</i>COMPARE</button>
+<button data-tab="saved"><i>★</i>SAVED</button>
+</nav>
+</div>
+<script>
+const D={
+ AFL:{icon:"🏉",teams:[
+  {name:"Richmond",code:"RICH",players:[
+   {name:"Dustin Martin",pos:"Midfielder / Forward",years:"2010–2024",stats:{Games:302,Goals:338,Disposals:"7,291"},seasons:[["2024",13,10,231],["2023",20,25,405],["2022",9,12,171],["2017",25,37,744]]},
+   {name:"Trent Cotchin",pos:"Midfielder",years:"2008–2023",stats:{Games:306,Goals:141,Disposals:"6,687"},seasons:[["2023",19,8,304],["2022",19,7,373],["2017",25,8,592]]}
+  ]},
+  {name:"Brisbane Lions",code:"BL",players:[
+   {name:"Simon Black",pos:"Midfielder",years:"1998–2013",stats:{Games:322,Goals:171,Disposals:"7,580"},seasons:[["2013",8,2,169],["2002",25,15,640],["2001",25,17,618]]}
+  ]},
+  {name:"Essendon",code:"ESS",players:[
+   {name:"James Hird",pos:"Utility",years:"1992–2007",stats:{Games:253,Goals:343,Disposals:"5,000+"},seasons:[["2007",17,16,340],["2000",20,36,420],["1996",24,28,500]]}
+  ]}
+ ]},
+ MLB:{icon:"⚾",teams:[
+  {name:"Los Angeles Dodgers",code:"LAD",players:[
+   {name:"Shohei Ohtani",pos:"DH / Pitcher",years:"2018–",stats:{Games:"800+",HR:"250+",OPS:".900+"},seasons:[["2025",158,55,"1.014"],["2024",159,54,"1.036"],["2023",135,44,"1.066"]]}
+  ]},
+  {name:"New York Yankees",code:"NYY",players:[
+   {name:"Aaron Judge",pos:"Outfielder",years:"2016–",stats:{Games:"1,000+",HR:"300+",OPS:".950+"},seasons:[["2025",152,53,"1.050"],["2024",158,58,"1.159"],["2022",157,62,"1.111"]]}
+  ]},
+  {name:"Boston Red Sox",code:"BOS",players:[
+   {name:"David Ortiz",pos:"Designated Hitter",years:"1997–2016",stats:{Games:"2,408",HR:541,OPS:".931"},seasons:[["2016",151,38,"1.021"],["2006",151,54,"1.049"],["2004",150,41,".983"]]}
+  ]}
+ ]}
+};
+let state={sport:"AFL",year:2026,tab:"home",team:null,player:null,saved:JSON.parse(localStorage.getItem("sv_saved")||"[]")};
+const v=document.getElementById("view");
+function home(){
+ v.innerHTML=`<section class="hero"><div class="eyebrow">THE HISTORY OF THE GAME</div><h1>Every player.<br>Every season.</h1><p>Travel through sporting history, explore teams and discover player careers from 1990 to today.</p><div class="search"><input id="quick" placeholder="Search any player…"><button onclick="doSearch(document.getElementById('quick').value)">GO</button></div></section>
+ <div class="sectionTitle"><h2>Choose your sport</h2><span>V1 PROTOTYPE</span></div><div class="sports">${Object.keys(D).map(s=>`<div class="sport ${state.sport==s?'active':''}" onclick="setSport('${s}')"><div class="icon">${D[s].icon}</div><b>${s=="MLB"?"Baseball":"AFL"}</b><small>${s=="MLB"?"MLB":"Australian Football"}</small></div>`).join("")}</div>
+ <div class="sectionTitle"><h2>Time Machine</h2><span>1990–2026</span></div><div class="time"><div class="eyebrow">SEASON</div><div class="yearBig" id="yearOut">${state.year}</div><input type="range" min="1990" max="2026" value="${state.year}" oninput="state.year=+this.value;yearOut.textContent=this.value"><div class="yearrow"><span>1990</span><span>2000</span><span>2010</span><span>2026</span></div><button class="goldbtn" style="width:100%;height:44px;margin-top:15px" onclick="season()">EXPLORE ${state.sport} SEASON</button></div>
+ <p class="notice">Prototype uses illustrative/demo records only. Production data will come from properly licensed or permitted sources.</p>`;
+}
+function setSport(s){state.sport=s;home()}
+function season(){
+ v.innerHTML=`<button class="back" onclick="home()">← Home</button><div class="eyebrow">${state.sport} TIME MACHINE</div><div class="sectionTitle" style="margin-top:6px"><h2>${state.year} Season</h2><span>${D[state.sport].teams.length} DEMO TEAMS</span></div><div class="cards">${D[state.sport].teams.map((t,i)=>`<div class="card" onclick="team(${i})"><div class="teamline"><div class="badge">${t.code}</div><div><b>${t.name}</b><br><small>${t.players.length} prototype player${t.players.length==1?'':'s'} • tap roster</small></div></div></div>`).join("")}</div><p class="notice">The final version can populate complete historical teams and season data once the data feed is connected.</p>`;
+}
+function team(i){state.team=i;let t=D[state.sport].teams[i];v.innerHTML=`<button class="back" onclick="season()">← ${state.year} season</button><div class="eyebrow">${state.sport} • ${state.year}</div><div class="sectionTitle" style="margin-top:6px"><h2>${t.name}</h2><span>ROSTER</span></div><div class="cards">${t.players.map((p,j)=>`<div class="card" onclick="player(${j})"><div class="teamline"><div class="avatar">${p.name.split(" ").map(x=>x[0]).join("")}</div><div><b>${p.name}</b><br><small>${p.pos}</small><br><span class="pill">${p.years}</span></div></div></div>`).join("")}</div>`}
+function player(j){state.player=j;let t=D[state.sport].teams[state.team],p=t.players[j];let saved=state.saved.includes(p.name);v.innerHTML=`<button class="back" onclick="team(${state.team})">← ${t.name}</button><div class="card"><div class="playerHead"><div class="avatar">${p.name.split(" ").map(x=>x[0]).join("")}</div><div><div class="eyebrow">${state.sport} PLAYER</div><h2 style="margin:3px 0">${p.name}</h2><small>${p.pos} • ${p.years}</small></div></div><div class="statgrid">${Object.entries(p.stats).map(([k,x])=>`<div class="stat"><strong>${x}</strong><span>${k}</span></div>`).join("")}</div><button class="goldbtn" style="width:100%;height:42px;margin-top:12px" onclick="savePlayer('${p.name.replaceAll("'","\\'")}')">${saved?"★ SAVED":"☆ SAVE PLAYER"}</button></div>
+ <div class="sectionTitle"><h2>Career seasons</h2><span>DEMO DATA</span></div><div class="cards">${p.seasons.map(s=>`<div class="card"><b>${s[0]}</b><div class="statgrid"><div class="stat"><strong>${s[1]}</strong><span>Games</span></div><div class="stat"><strong>${s[2]}</strong><span>${state.sport=="MLB"?"HR":"Goals"}</span></div><div class="stat"><strong>${s[3]}</strong><span>${state.sport=="MLB"?"OPS":"Disposals"}</span></div></div></div>`).join("")}</div>`;
+}
+function allPlayers(){return Object.entries(D).flatMap(([sport,x])=>x.teams.flatMap((t,ti)=>t.players.map((p,pi)=>({sport,team:t.name,ti,pi,...p}))))}
+function doSearch(q=""){state.tab="search";document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab=="search"));search(q)}
+function search(q=""){let a=allPlayers().filter(p=>p.name.toLowerCase().includes(q.toLowerCase()));v.innerHTML=`<div class="sectionTitle" style="margin-top:0"><h2>Player Search</h2><span>${a.length} FOUND</span></div><div class="search"><input id="sq" value="${q}" placeholder="Player name…" oninput="search(this.value)"></div><div class="cards" style="margin-top:12px">${a.map(p=>`<div class="card" onclick="openResult('${p.sport}',${p.ti},${p.pi})"><b>${p.name}</b><br><small>${p.sport} • ${p.team} • ${p.pos}</small></div>`).join("")||`<div class="empty">No prototype player found.</div>`}</div>`}
+function openResult(s,ti,pi){state.sport=s;state.team=ti;player(pi)}
+function compare(){let a=allPlayers();v.innerHTML=`<div class="sectionTitle" style="margin-top:0"><h2>Compare Players</h2><span>HEAD TO HEAD</span></div><div class="card"><div class="compareRow"><div><div class="avatar" style="margin:auto">${a[0].name.split(" ").map(x=>x[0]).join("")}</div><b>${a[0].name}</b></div><div class="vs">VS</div><div><div class="avatar" style="margin:auto">${a[4].name.split(" ").map(x=>x[0]).join("")}</div><b>${a[4].name}</b></div></div><p class="notice">Prototype comparison demonstrates the screen. Production will allow sport-specific player selection, seasons, career totals and charts.</p></div>`}
+function savePlayer(n){state.saved.includes(n)?state.saved=state.saved.filter(x=>x!=n):state.saved.push(n);localStorage.setItem("sv_saved",JSON.stringify(state.saved));player(state.player)}
+function saved(){let a=allPlayers().filter(p=>state.saved.includes(p.name));v.innerHTML=`<div class="sectionTitle" style="margin-top:0"><h2>Saved Players</h2><span>${a.length}</span></div><div class="cards">${a.map(p=>`<div class="card" onclick="openResult('${p.sport}',${p.ti},${p.pi})"><b>★ ${p.name}</b><br><small>${p.sport} • ${p.team}</small></div>`).join("")||`<div class="empty">Save players and they'll appear here.</div>`}</div>`}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x==b));({home,search,compare,saved}[state.tab])()});
+home();
+</script>
+</body>
+</html>
